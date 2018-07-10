@@ -21,6 +21,7 @@ if (action == "do-what-it-says"){
  
 
     switch(actionInput){
+
     case "spotify-this-song":
     spotifyThis (secondArg);
     break;
@@ -35,11 +36,13 @@ if (action == "do-what-it-says"){
 
     default:
     console.log("not a valid action");
+
     }
     
 } else {
 
     switch(action){
+
         case "spotify-this-song":
         let song = process.argv[3];
         spotifyThis (song);
@@ -56,26 +59,26 @@ if (action == "do-what-it-says"){
     
         default:
         console.log("not a valid action");
+
         }
 
 }
 
+  // spotify API Function
 function spotifyThis (secondArg){
     let song = secondArg;
     
-    // spotify API actions start
+  
         spotify
       .search({ type: 'track', query: song })
       .then(function(response) {
         let jsonData = JSON.stringify(response);
         fs.writeFileSync("./data.json", jsonData, "utf8" );
-        // console.log("filewrittensuccess");
-        // console.log("stepafterfilewrite");
         let config = require('./data.json');
         console.log("****SpotifyDataStart****")
         console.log("Song:"+song);
         let resultsNum = config.tracks.items.length;
-        if (resultsNum == 0){console.log ("No tracks found! Try again!")
+        if (resultsNum == 0){console.log ("No tracks found! Try again!") //error check if no tracks exist
         console.log("****SpotifyDataEnd****") }
         else{
         console.log("Artist(s):"+config.tracks.items[0].album.artists[0].name);
@@ -90,6 +93,8 @@ function spotifyThis (secondArg){
       });
 }
 
+
+// Twitter API Function
 function tweetThis (){
     console.log("tweets go here");
     var params = {screen_name: 'gjDev1'};
@@ -120,12 +125,15 @@ function tweetThis (){
 });
 }
 
+
+// OMDB API Function
 function movieThis (secondArg){
-    console.log(secondArg);
+    
     let movieName = secondArg;
     if (movieName == undefined) {
         movieName = "Mr. Nobody"
     }
+
     console.log("Loading OMDB Data for: "+ movieName +"....");
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
@@ -133,16 +141,16 @@ function movieThis (secondArg){
         // If the request was successful...
         if (!error && response.statusCode === 200) {
           // Then log the body from the site!
-        //   console.log(JSON.stringify(body));
-        if (JSON.parse(body).Title != undefined){
+    
+        if (JSON.parse(body).Title != undefined){ // error check for junk data input
             console.log("Title: "+JSON.parse(body).Title);
           console.log("Year: "+JSON.parse(body).Year);
           console.log("Genre: "+JSON.parse(body).Genre);
 
           let ratingsCount = JSON.parse(body).Ratings.length;
-        //   console.log(ratingsCount);
-
-        if (ratingsCount > 2){
+        
+        // ensuring no errors are returned for movies that do not have the required ratings data
+        if (ratingsCount > 2){ 
         for (i=0 ; i < 2; i++ ){
             console.log(JSON.parse(body).Ratings[i].Source+ " (Rating): " +JSON.parse(body).Ratings[i].Value);
         }
