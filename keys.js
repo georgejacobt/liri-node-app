@@ -1,4 +1,4 @@
-console.log('this is loaded');
+console.log('Alert:Keys.js loaded sucessfully');
 
 
 
